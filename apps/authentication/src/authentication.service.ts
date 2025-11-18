@@ -1,21 +1,19 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { User, UserDocument } from './schemas/user.schema';
 import { CreateUserDto } from '@app/common';
 import { RpcException } from '@nestjs/microservices';
 import * as bcrypt from 'bcrypt';
+import { UserRepository } from './repositories/user.repository';
 
 @Injectable()
 export class AuthenticationService {
   private readonly SALT_ROUNDS = 10;
 
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+  constructor(private readonly userRepository: UserRepository) {}
 
   async register(createUserDto: CreateUserDto) {
     const email = createUserDto.email;
 
-    const existingUser = await this.userModel.findOne({ email });
+    const existingUser = await this.userRepository.findByEmail(email);
 
     if (existingUser) {
       throw new RpcException({
@@ -30,13 +28,12 @@ export class AuthenticationService {
       this.SALT_ROUNDS,
     );
 
-    const newUser = new this.userModel({
+    const savedUser = await this.userRepository.create({
       email: createUserDto.email,
       password: hashedPassword,
       firstName: createUserDto.firstName,
       lastName: createUserDto.lastName,
     });
-    const savedUser = await newUser.save();
 
     return {
       _id: savedUser._id,
@@ -49,7 +46,7 @@ export class AuthenticationService {
   }
 
   async getUsers() {
-    const users = await this.userModel.find().exec();
+    const users = await this.userRepository.findAll();
 
     return users.map((user) => ({
       _id: user._id,
