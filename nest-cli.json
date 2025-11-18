@@ -25,7 +25,8 @@
       "entryFile": "main",
       "sourceRoot": "apps/authentication/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/authentication/tsconfig.app.json"
+        "tsConfigPath": "apps/authentication/tsconfig.app.json",
+        "webpack": false
       }
     },
     "common": {

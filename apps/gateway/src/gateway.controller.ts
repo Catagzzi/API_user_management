@@ -1,15 +1,8 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Inject,
-  ServiceUnavailableException,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Inject } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { RegisterUserDto } from '@app/common';
-import { Observable, throwError } from 'rxjs';
-import { retry, catchError } from 'rxjs/operators';
+import { CreateUserDto, UserDto } from '@app/common';
+import { Observable } from 'rxjs';
+import { retry } from 'rxjs/operators';
 
 @Controller('auth')
 export class GatewayController {
@@ -18,20 +11,17 @@ export class GatewayController {
   ) {}
 
   @Post('register')
-  register(@Body() registerUserDto: RegisterUserDto): Observable<any> {
-    return this.authClient.send({ cmd: 'register_user' }, registerUserDto);
+  register(@Body() createUserDto: CreateUserDto): Observable<UserDto> {
+    return this.authClient.send<UserDto>(
+      { cmd: 'register_user' },
+      createUserDto,
+    );
   }
 
   @Get('users')
-  getUsers(): Observable<any> {
-    return this.authClient.send({ cmd: 'get_users' }, {}).pipe(
-      retry(3),
-      catchError((err) => {
-        console.error('Failed after 3 retries:', err);
-        return throwError(
-          () => new ServiceUnavailableException('Service unavailable'),
-        );
-      }),
-    );
+  getUsers(): Observable<UserDto[]> {
+    return this.authClient
+      .send<UserDto[]>({ cmd: 'get_users' }, {})
+      .pipe(retry(3));
   }
 }
