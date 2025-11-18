@@ -1,12 +1,19 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 import { AuthenticationService } from './authentication.service';
+import { RegisterUserDto } from '@app/common';
 
 @Controller()
 export class AuthenticationController {
   constructor(private readonly authenticationService: AuthenticationService) {}
 
-  @Get()
-  getHello(): string {
-    return this.authenticationService.getHello();
+  @MessagePattern({ cmd: 'register_user' })
+  async register(@Payload() data: RegisterUserDto) {
+    return await this.authenticationService.register(data);
+  }
+
+  @MessagePattern({ cmd: 'get_users' })
+  async getUsers() {
+    return await this.authenticationService.getUsers();
   }
 }
