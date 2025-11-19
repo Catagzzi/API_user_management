@@ -1,0 +1,9 @@
+export const appConfig = {
+  gateway: {
+    port: parseInt(process.env.GATEWAY_PORT, 10) || 3000,
+  },
+
+  authentication: {
+    port: parseInt(process.env.AUTH_SERVICE_PORT, 10) || 3001,
+  },
+};

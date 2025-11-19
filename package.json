@@ -80,10 +80,14 @@
     "testEnvironment": "node",
     "roots": [
       "<rootDir>/apps/",
-      "<rootDir>/libs/"
+      "<rootDir>/common/",
+      "<rootDir>/config/",
+      "<rootDir>/core/"
     ],
     "moduleNameMapper": {
-      "^@app/common(|/.*)$": "<rootDir>/libs/common/src/$1"
+      "^@common(|/.*)$": "<rootDir>/common/$1",
+      "^@config(|/.*)$": "<rootDir>/config/$1",
+      "^@core(|/.*)$": "<rootDir>/core/$1"
     }
   }
 }

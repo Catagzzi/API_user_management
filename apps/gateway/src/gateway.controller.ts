@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Inject } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { CreateUserDto, UserDto } from '@app/common';
+import { CreateUserDto, UserDto } from '@common';
 import { Observable } from 'rxjs';
 import { retry } from 'rxjs/operators';
 
