@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { GatewayController } from './gateway.controller';
-import { GatewayService } from './gateway.service';
 import { appConfig } from '@config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { JwtStrategy } from './strategies/jwt.strategy';
@@ -23,6 +22,6 @@ import { JwtStrategy } from './strategies/jwt.strategy';
     JwtModule.register({}),
   ],
   controllers: [GatewayController],
-  providers: [GatewayService, JwtStrategy],
+  providers: [JwtStrategy],
 })
 export class GatewayModule {}

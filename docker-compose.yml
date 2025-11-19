@@ -18,6 +18,9 @@ services:
 
       NODE_ENV: ${NODE_ENV}
 
+    ports:
+      - '3001:3001'
+
     networks:
       - aladia-network
 
