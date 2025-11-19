@@ -6,4 +6,9 @@ export const appConfig = {
   authentication: {
     port: parseInt(process.env.AUTH_SERVICE_PORT, 10) || 3001,
   },
+
+  jwt: {
+    accessTokenSecret: process.env.JWT_ACCESS_SECRET || '',
+    refreshTokenSecret: process.env.JWT_REFRESH_SECRET || '',
+  },
 };

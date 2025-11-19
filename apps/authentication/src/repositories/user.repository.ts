@@ -9,8 +9,14 @@ export class UserRepository {
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
   ) {}
 
-  async findByEmail(email: string): Promise<UserDocument | null> {
-    return await this.userModel.findOne({ email }).exec();
+  async findByEmail(
+    email: string,
+    withPassword = false,
+  ): Promise<UserDocument | null> {
+    return await this.userModel
+      .findOne({ email })
+      .select(withPassword ? '+password' : '')
+      .exec();
   }
 
   async findAll(): Promise<UserDocument[]> {

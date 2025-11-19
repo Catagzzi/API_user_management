@@ -1,8 +1,11 @@
 import { Module } from '@nestjs/common';
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
 import { GatewayController } from './gateway.controller';
 import { GatewayService } from './gateway.service';
 import { appConfig } from '@config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
   imports: [
@@ -16,8 +19,10 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
         },
       },
     ]),
+    PassportModule,
+    JwtModule.register({}),
   ],
   controllers: [GatewayController],
-  providers: [GatewayService],
+  providers: [GatewayService, JwtStrategy],
 })
 export class GatewayModule {}
