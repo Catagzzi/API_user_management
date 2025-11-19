@@ -14,7 +14,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
         name: 'AUTH_SERVICE',
         transport: Transport.TCP,
         options: {
-          host: 'localhost',
+          host: appConfig.authentication.host,
           port: appConfig.authentication.port,
         },
       },
