@@ -1,0 +1,57 @@
+services:
+  authentication:
+    build:
+      context: .
+      dockerfile: apps/authentication/Dockerfile
+
+    container_name: aladia-authentication
+    restart: unless-stopped
+
+    environment:
+      DBMONGO_URI: ${DBMONGO_URI}
+      DB_NAME: ${DB_NAME}
+
+      AUTH_SERVICE_PORT: ${AUTH_SERVICE_PORT}
+
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
+
+      NODE_ENV: ${NODE_ENV}
+
+    ports:
+      - '3001:3001'
+
+    networks:
+      - aladia-network
+
+  gateway:
+    build:
+      context: .
+      dockerfile: apps/gateway/Dockerfile
+
+    container_name: aladia-gateway
+    restart: unless-stopped
+
+    environment:
+      GATEWAY_PORT: ${GATEWAY_PORT}
+
+      AUTH_SERVICE_HOST: authentication
+      AUTH_SERVICE_PORT: ${AUTH_SERVICE_PORT}
+
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
+
+      NODE_ENV: ${NODE_ENV}
+
+    ports:
+      - '3000:3000'
+
+    networks:
+      - aladia-network
+
+    depends_on:
+      - authentication
+
+networks:
+  aladia-network:
+    driver: bridge

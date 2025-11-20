@@ -1,10 +1,43 @@
 import { Module } from '@nestjs/common';
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
+import { TerminusModule } from '@nestjs/terminus';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 import { GatewayController } from './gateway.controller';
-import { GatewayService } from './gateway.service';
+import { appConfig } from '@config';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
-  imports: [],
+  imports: [
+    ClientsModule.register([
+      {
+        name: 'AUTH_SERVICE',
+        transport: Transport.TCP,
+        options: {
+          host: appConfig.authentication.host,
+          port: appConfig.authentication.port,
+        },
+      },
+    ]),
+    PassportModule,
+    JwtModule.register({}),
+    TerminusModule,
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000, // 60 segundos
+        limit: 10, // 10 requests por minuto
+      },
+    ]),
+  ],
   controllers: [GatewayController],
-  providers: [GatewayService],
+  providers: [
+    JwtStrategy,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class GatewayModule {}
