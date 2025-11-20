@@ -26,8 +26,8 @@ import { JwtStrategy } from './strategies/jwt.strategy';
     TerminusModule,
     ThrottlerModule.forRoot([
       {
-        ttl: 60000, // 60 segundos
-        limit: 10, // 10 requests por minuto
+        ttl: 60000,
+        limit: 10,
       },
     ]),
   ],

@@ -1,14 +1,28 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { GatewayController } from './gateway.controller';
 import { of } from 'rxjs';
+import {
+  HealthCheckService,
+  MicroserviceHealthIndicator,
+} from '@nestjs/terminus';
 
 describe('GatewayController', () => {
   let controller: GatewayController;
   let mockAuthClient: any;
+  let mockHealthCheckService: any;
+  let mockMicroserviceHealthIndicator: any;
 
   beforeEach(async () => {
     mockAuthClient = {
       send: jest.fn(),
+    };
+
+    mockHealthCheckService = {
+      check: jest.fn(),
+    };
+
+    mockMicroserviceHealthIndicator = {
+      pingCheck: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -17,6 +31,14 @@ describe('GatewayController', () => {
         {
           provide: 'AUTH_SERVICE',
           useValue: mockAuthClient,
+        },
+        {
+          provide: HealthCheckService,
+          useValue: mockHealthCheckService,
+        },
+        {
+          provide: MicroserviceHealthIndicator,
+          useValue: mockMicroserviceHealthIndicator,
         },
       ],
     }).compile();
